@@ -18,6 +18,6 @@ stopifnot(all(apply(otu,c(1,2),is.numeric)))
 stopifnot(all(otu>=0))
 
 # Write Data
-saveRDS(otu, "data/otu_HMP2.rds")
+saveRDS(as.matrix(otu), "data/otu_HMP2.rds")
 saveRDS(meta, "data/meta_HMP2.rds")
-saveRDS(taxa, "data/taxonomy.rds")
+saveRDS(as.matrix(taxa), "data/taxonomy.rds")
