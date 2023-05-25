@@ -7,7 +7,6 @@
 #' @param mar Integer giving the dimension where the function will be applied;
 #' 1 for rows and 2 for columns (default 1).
 #' 
-#' @export
 CLR <- function(X, mar=1){
   
   if(!is.matrix(X)) stop("X must be a matrix or a vector")

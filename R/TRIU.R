@@ -5,7 +5,6 @@
 #' 
 #' @param X numeric symmetric matrix 
 #' 
-#' @export
 TRIU <- function(X){
   
   if(!is.matrix(X)) stop("X must be a matrix or a vector")

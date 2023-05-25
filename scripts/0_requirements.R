@@ -21,3 +21,13 @@ install_github("https://github.com/tpq/propr")
 
 # ggpubr: nice plots based on ggplot2
 install.packages("ggpubr")
+
+# ggVennDiagram: Venn diagram based on ggplot2
+install.packages("ggVennDiagram")
+
+# qualpalr: generate distinct qualitative color palette 
+# (useful to associate vertex color to taxonomy)
+install.packages("qualpalr")
+
+# cowplot: draw ggplot2 in new figures
+install.packages("cowplot")
