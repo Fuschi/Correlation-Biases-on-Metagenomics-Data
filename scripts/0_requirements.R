@@ -9,3 +9,15 @@ install.packages("reshape2")
 
 # gridExtra: arrange multiple grid-based plots on a page 
 install.packages("gridExtra")
+
+# SpiecEasi: package with spiec.easi and sparCC methods 
+install_github("zdk123/SpiecEasi")
+
+# psych: computes p-value corrections on correlations measures
+install.packages('psych')
+
+# propr: package with proportionality rho method
+install_github("https://github.com/tpq/propr")
+
+# ggpubr: nice plots based on ggplot2
+install.packages("ggpubr")
