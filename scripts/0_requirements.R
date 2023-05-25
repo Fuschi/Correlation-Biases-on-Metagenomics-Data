@@ -31,3 +31,10 @@ install.packages("qualpalr")
 
 # cowplot: draw ggplot2 in new figures
 install.packages("cowplot")
+
+# vegan: used to elaborates shannon entropy
+install.packages("vegan")
+
+# mvtnorm: Multivariate Normal utilities
+install.packages("mvtnorm")
+ 
