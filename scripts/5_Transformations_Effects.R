@@ -4,8 +4,6 @@ library(tidyverse)
 D <- seq(5,200,by=5)
 M <- c(1:10,seq(12,98,by=2),seq(100,1000,by=50),seq(1500,10000,by=500))
 
-# load TOY_MODEL function
-source("R/TOY_MODEL.R")
 
 # Logical variable permits to choose if redo all the counts or to select files from cache
 # folder
@@ -26,8 +24,9 @@ if(!CACHE){
     print(d)
     for(m in 1:length(M)){
       
-      toy <- TOY_MODEL(n=10^4,cor=diag(D[d]),M=M[m],dist="norm",
-                       method="pearson",force.positive=TRUE)
+      toy <- ToyModel::toy_model(n=10^4, cor=diag(D[d]), M=M[m],
+                                 qdist=ToyModel::qhtrlnorm, method="pearson",
+                                 force.positive=TRUE)
       
       tmpL1 <- abs(toy$cor_NorTA - toy$cor_L1)
       tmpCLR <- abs(toy$cor_NorTA - toy$cor_CLR)
@@ -43,9 +42,9 @@ if(!CACHE){
   
 } else {
   
-  effL1.mean <- readRDS("cache/effL1_mean_0.rds")
-  effCLR.mean <- readRDS("cache/effCLR_mean_0.rds")
-  shannon.norm <- readRDS("cache/shannon_norm.rds")
+  effL1.mean <- readRDS("cache/5_Transformations_Effects/effL1_mean.rds")
+  effCLR.mean <- readRDS("cache/5_Transformations_Effects/effCLR_mean.rds")
+  shannon.norm <- readRDS("cache/5_Transformations_Effects/shannon_norm.rds")
   
 }
 

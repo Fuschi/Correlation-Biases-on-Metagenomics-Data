@@ -17,7 +17,7 @@ meta <- readRDS("data/meta_HMP2.rds")
 taxa <- readRDS("data/taxonomy.rds")
 
 # Select samples belonging to 69-001 subject in health status
-otu.69001.H <- otu[meta$SubjectID=="69-001" & meta$CL4_2=="Healthy" , ]
+otu.69001.H <- otu[meta$SubjectID=="69-001" & meta$CL4_2=="Healthy", ]
 
 # Remove rarest OTUs using prevalence and median of non-zero values
 otu.filt <- otu.69001.H[, colSums(otu.69001.H>0)/nrow(otu.69001.H) >= .33]
@@ -66,14 +66,14 @@ adj.clr <- res.clr*(p.adjust<=.05)
 
 # Re-arrange data for spiec-easi and Pearson+CLR histogram comparison
 #------------------------------------------------------------------------------#
-res.mb.clr <- triu(res.clr*abs(adj.mb)); res.mb.clr <- res.mb.clr[res.mb.clr!=0]
-res.gl.clr <- triu(res.clr*abs(adj.gl)); res.gl.clr <- res.gl.clr[res.gl.clr!=0]
+res.mb.clr <- TRIU(res.clr*abs(adj.mb)) %>% .[.!=0]
+res.gl.clr <- TRIU(res.clr*abs(adj.gl)) %>% .[.!=0]
 
-df.mb <- data.frame("method"=rep("clr",length(triu(res.clr))),"value"=triu(res.clr))
-df.mb <- rbind(df.mb, data.frame("method"=rep("mb",length(res.mb.clr)),"value"=res.mb.clr))
+df.mb <- tibble("method"=rep("clr",length(TRIU(res.clr))),"value"=TRIU(res.clr)) %>%
+  rbind(tibble("method"=rep("mb",length(res.mb.clr)),"value"=res.mb.clr))
 
-df.gl <- data.frame("method"=rep("clr",length(triu(res.clr))),"value"=triu(res.clr))
-df.gl <- rbind(df.gl, data.frame("method"=rep("gl",length(res.gl.clr)),"value"=res.gl.clr))
+df.gl <- tibble("method"=rep("clr",length(TRIU(res.clr))),"value"=TRIU(res.clr)) %>%
+  rbind(tibble("method"=rep("gl",length(res.gl.clr)),"value"=res.gl.clr))
 
 
 
@@ -81,8 +81,8 @@ df.gl <- rbind(df.gl, data.frame("method"=rep("gl",length(res.gl.clr)),"value"=r
 #------------------------------------------------------------------------------#
 
 # SparCC
-p1 <- ggpubr::ggscatter(data.frame("PearsonCLR"=triu(res.clr),
-                                   "SparCC"=triu(res.cc)),
+p1 <- ggpubr::ggscatter(data.frame("PearsonCLR"=TRIU(res.clr),
+                                   "SparCC"=TRIU(res.cc)),
                         x="PearsonCLR", y="SparCC",
                         add="reg.line", conf.int=TRUE,
                         add.params = list(color="red", fill="lightgray")) +
@@ -95,8 +95,8 @@ p1 <- ggpubr::ggscatter(data.frame("PearsonCLR"=triu(res.clr),
   theme(plot.title = element_text(hjust = 0.5))
 
 #Rho
-p2 <- ggpubr::ggscatter(data.frame("PearsonCLR"=triu(res.clr),
-                                   "Rho"=triu(res.rho)),
+p2 <- ggpubr::ggscatter(data.frame("PearsonCLR"=TRIU(res.clr),
+                                   "Rho"=TRIU(res.rho)),
                         x="PearsonCLR", y="Rho",
                         add="reg.line", conf.int=TRUE,
                         add.params = list(color="red", fill="lightgray")) +
@@ -133,11 +133,13 @@ p3.zoom <- ggplot(df.mb, aes(x=value, fill=method, color=method)) +
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank())+
   theme_void() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = +Inf), 
+            col="black", alpha=0, linewidth=1)
 
 p3 <- p3.all +
   annotation_custom(ggplotGrob(p3.zoom), xmin=-1.1, xmax=-.3, 
-                    ymin=1400, ymax = 1850) +
+                    ymin=1400, ymax = 1900) +
   annotation_custom(grid::textGrob(label="3)", gp=grid::gpar(cex=1.5),
                                    x=unit(0.92,"npc"), y=unit(0.95,"npc")))
 
@@ -167,11 +169,13 @@ p4.zoom <- ggplot(df.gl, aes(x=value, fill=method, color=method)) +
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank()) +
   theme_void() +
-  theme(legend.position="none")
+  theme(legend.position="none") +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = +Inf), 
+            col="black", alpha=0, linewidth=1)
 
 p4 <- p4.all +
   annotation_custom(ggplotGrob(p4.zoom), xmin=-1.1, xmax=-.3, 
-                    ymin=1400, ymax = 1850) +
+                    ymin=1400, ymax = 1900) +
   annotation_custom(grid::textGrob(label="4)", gp=grid::gpar(cex=1.5),
                                    x=unit(0.92,"npc"), y=unit(0.95,"npc")))
 

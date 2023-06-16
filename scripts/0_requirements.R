@@ -37,4 +37,8 @@ install.packages("vegan")
 
 # mvtnorm: Multivariate Normal utilities
 install.packages("mvtnorm")
+
+# lightweight package with necessary function to generate metagenomics data 
+# based on the hurdle log-normal distribution and Normal To Anything method
+install_github("https://github.com/Fuschi/ToyModel")
  
