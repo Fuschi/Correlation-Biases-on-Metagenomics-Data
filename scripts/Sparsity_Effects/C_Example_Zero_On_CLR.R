@@ -1,5 +1,4 @@
 library(tidyverse)
-library(ToyModel)
 library(ggpubr)
 
 setwd("~/Scrivania/Correlation-Biases-on-Metagenomics-Data/scripts/Sparsity_Effects/")
@@ -31,27 +30,86 @@ info_filt <- info %>%
 idx.max <- c("OTU_269","OTU_97")
 idx.min <- c("OTU_269","OTU_313")
 
-p.min <- otu.filt %>% as_tibble %>%
-  dplyr::select(all_of(idx.min)) %>%
-  ggscatter(x="OTU_269",y="OTU_313", add="reg.line",
-            size=1.5, color=rgb(0,0,0,.4),
-            add.params=list(color="blue", fill="lightgray"),
+detection <- otu.filt %>% as_tibble() %>%
+  select(all_of(idx.min)) %>%
+  mutate(detection=case_when(
+    OTU_269==0 & OTU_313==0 ~ "Both are 0",
+    OTU_269==0 ~ "OTU_269 is 0",
+    OTU_313==0 ~ "OTU_313 is 0",
+    OTU_269>0 & OTU_313>0 ~ "Both are >0", # Adjusted condition for clarity
+  )) %>%
+  select(detection)
+
+p.min <- otu.filt %>% as_tibble() %>%
+  select(all_of(idx.min)) %>%
+  cbind(detection) %>%
+  ggscatter(x="OTU_269", y="OTU_313", add="reg.line", color="detection",
+            size=1.5, palette=c("Both are 0"=rgb(.6,0,0,.4), 
+                                "OTU_269 is 0"=rgb(0,.6,.3,.4), 
+                                "OTU_313 is 0"=rgb(0,.3,.6,.4), 
+                                "Both are >0"=rgb(0,0,0,.6)),
+            add.params=list(color="#800080", fill="lightgray"),
             conf.int=TRUE) +
   stat_cor(aes(label = after_stat(r.label)), color="red", label.x.npc=0) +
   xlab("OTU 269 (Zero ~73%)") +
   ylab("OTU 313 (Zero ~55%)") +
-  theme(axis.title=element_text(size=6))
+  theme(axis.title=element_text(size=12))
 
 p.min.clr <- otu.filt.CLR %>% as_tibble %>%
   dplyr::select(all_of(idx.min)) %>%
-  ggscatter(x="OTU_269",y="OTU_313", add="reg.line",
-            size=1.5, color=rgb(0,0,0,.4),
-            add.params=list(color="blue", fill="lightgray"),
+  cbind(detection) %>%
+  ggscatter(x="OTU_269", y="OTU_313", add="reg.line", color="detection",
+            size=1.5, palette=c("Both are 0"=rgb(.6,0,0,.4), 
+                                "OTU_269 is 0"=rgb(0,.6,.3,.4), 
+                                "OTU_313 is 0"=rgb(0,.3,.6,.4), 
+                                "Both are >0"=rgb(0,0,0,.6)),
+            add.params=list(color="#800080", fill="lightgray"),
             conf.int=TRUE) +
   stat_cor(aes(label = after_stat(r.label)), color="red", label.x.npc=0) +
   xlab("OTU 269 (Zero ~73%)") +
   ylab("OTU 313 (Zero ~55%)") +
-  theme(axis.title=element_text(size=6))
+  theme(axis.title=element_text(size=12))
+
+
+detection <- otu.filt %>% as_tibble() %>%
+  select(all_of(idx.max)) %>%
+  mutate(detection=case_when(
+    OTU_269==0 & OTU_97==0 ~ "Both are 0",
+    OTU_269==0 ~ "OTU_269 is 0",
+    OTU_97==0 ~ "OTU_97 is 0",
+    OTU_269>0 & OTU_97>0 ~ "Both are >0", 
+  )) %>%
+  select(detection)
+
+p.min <- otu.filt %>% as_tibble() %>%
+  select(all_of(idx.min)) %>%
+  cbind(detection) %>%
+  ggscatter(x="OTU_269", y="OTU_313", add="reg.line", color="detection",
+            size=1.5, palette=c("Both are 0"=rgb(.6,0,0,.4), 
+                                "OTU_269 is 0"=rgb(0,.6,.3,.4), 
+                                "OTU_313 is 0"=rgb(0,.3,.6,.4), 
+                                "Both are >0"=rgb(0,0,0,.6)),
+            add.params=list(color="#800080", fill="lightgray"),
+            conf.int=TRUE) +
+  stat_cor(aes(label = after_stat(r.label)), color="red", label.x.npc=0) +
+  xlab("OTU 269 (Zero ~73%)") +
+  ylab("OTU 313 (Zero ~55%)") +
+  theme(axis.title=element_text(size=12))
+
+p.min.clr <- otu.filt.CLR %>% as_tibble %>%
+  dplyr::select(all_of(idx.min)) %>%
+  cbind(detection) %>%
+  ggscatter(x="OTU_269", y="OTU_313", add="reg.line", color="detection",
+            size=1.5, palette=c("Both are 0"=rgb(.6,0,0,.4), 
+                                "OTU_269 is 0"=rgb(0,.6,.3,.4), 
+                                "OTU_313 is 0"=rgb(0,.3,.6,.4), 
+                                "Both are >0"=rgb(0,0,0,.6)),
+            add.params=list(color="#800080", fill="lightgray"),
+            conf.int=TRUE) +
+  stat_cor(aes(label = after_stat(r.label)), color="red", label.x.npc=0) +
+  xlab("OTU 269 (Zero ~73%)") +
+  ylab("OTU 313 (Zero ~55%)") +
+  theme(axis.title=element_text(size=12))
 
 p.max <- otu.filt %>% as_tibble %>%
   dplyr::select(all_of(idx.max)) %>%
