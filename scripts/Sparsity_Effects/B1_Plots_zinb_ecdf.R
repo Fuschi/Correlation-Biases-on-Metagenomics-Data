@@ -26,6 +26,8 @@ p <- df %>%
   scale_y_continuous(breaks=seq(0,.9,.1), expand=c(0,0))  +
   scale_x_continuous(breaks=seq(-.8,.8,.2), expand=c(0,0)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  xlab("Correlation") + ylab("Zero %") 
+  xlab("r") + ylab(expression(phi))  +
+  theme(axis.title=element_text(size=12)) +
+  theme(legend.position="top")
 
 saveRDS(p, "error.rds")
