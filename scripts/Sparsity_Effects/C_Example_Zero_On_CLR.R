@@ -1,7 +1,7 @@
 library(tidyverse)
 library(ggpubr)
 
-setwd("~/Scrivania/Correlation-Biases-on-Metagenomics-Data/scripts/Sparsity_Effects/")
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 # Read HMP2
 otu <- readRDS("../../data/otu_HMP2.rds")
@@ -51,8 +51,8 @@ p.min <- otu.filt %>% as_tibble() %>%
             add.params=list(color="#800080", fill="lightgray"),
             conf.int=TRUE) +
   stat_cor(aes(label = after_stat(r.label)), color=rgb(.5,0,0), label.x.npc=0) +
-  xlab("OTU 269 (Zero ~73%)") +
-  ylab("OTU 313 (Zero ~55%)") +
+  xlab(expression("Count OTU 269 ("*phi*"~73%)")) +
+  ylab(expression("Count OTU 313 ("*phi*"~55%)")) +
   theme(axis.title=element_text(size=12)) +
   theme(legend.title=element_blank())
 
@@ -67,8 +67,8 @@ p.min.clr <- otu.filt.CLR %>% as_tibble %>%
             add.params=list(color="#800080", fill="lightgray"),
             conf.int=TRUE) +
   stat_cor(aes(label = after_stat(r.label)), color=rgb(.5,0,0), label.x.npc=0) +
-  xlab("OTU 269 (Zero ~73%)") +
-  ylab("OTU 313 (Zero ~55%)") +
+  xlab(expression("CLR OTU 269 ("*phi*"~73%)")) +
+  ylab(expression("CLR OTU 313 ("*phi*"~55%)")) +
   theme(axis.title=element_text(size=12)) +
   theme(legend.title=element_blank())
 
@@ -94,8 +94,8 @@ p.max <- otu.filt %>% as_tibble() %>%
             add.params=list(color="#800080", fill="lightgray"),
             conf.int=TRUE) +
   stat_cor(aes(label = after_stat(r.label)), color=rgb(.5,0,0), label.x.npc=0) +
-  xlab("OTU 269 (Zero ~73%)") +
-  ylab("OTU 97 (Zero ~56%)") +
+  xlab(expression("Count OTU 269 ("*phi*"~73%)")) +
+  ylab(expression("Count OTU 97 ("*phi*"~56%)")) +
   theme(axis.title=element_text(size=12)) +
   theme(legend.title=element_blank())
 
@@ -110,8 +110,8 @@ p.max.clr <- otu.filt.CLR %>% as_tibble %>%
             add.params=list(color="#800080", fill="lightgray"),
             conf.int=TRUE) +
   stat_cor(aes(label = after_stat(r.label)), color=rgb(.5,0,0), label.x.npc=0) +
-  xlab("OTU 269 (Zero ~73%)") +
-  ylab("OTU 97 (Zero ~56%)") +
+  xlab(expression("CLR OTU 269 ("*phi*"~73%)")) +
+  ylab(expression("CLR OTU 97 ("*phi*"~56%)")) +
   theme(axis.title=element_text(size=12)) +
   theme(legend.title=element_blank())
 
