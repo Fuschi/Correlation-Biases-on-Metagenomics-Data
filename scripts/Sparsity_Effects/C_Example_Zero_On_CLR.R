@@ -2,6 +2,7 @@ library(tidyverse)
 library(ggpubr)
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+source("../Methods_Comparison/CLR.R")
 
 # Read HMP2
 otu <- readRDS("../../data/otu_HMP2.rds")
@@ -10,7 +11,7 @@ meta <- readRDS("../../data/meta_HMP2.rds")
 otu.filt <- otu[, colSums(otu>0)/nrow(otu)>=.25]
 otu.filt <- otu.filt[, apply(otu.filt,2,\(x)median(x[x>0])>=5)]
 
-otu.filt.CLR <- ToyModel::clr(otu.filt)
+otu.filt.CLR <- CLR(otu.filt)
 PCLR <- cor(otu.filt.CLR)
 
 otu_prev <- setNames(colSums(otu.filt>0)/nrow(otu.filt), colnames(otu.filt))
@@ -40,14 +41,19 @@ detection <- otu.filt %>% as_tibble() %>%
   )) %>%
   select(detection)
 
+palette_named <- c(
+  "Both are 0" = "#D73027",
+  "OTU_269 is 0" = "#1A9850",
+  "OTU_313 is 0" = "#4575B4",
+  "Both are >0" = "black"
+)
+palette_named <- alpha(palette_named, .8)
+
 p.min <- otu.filt %>% as_tibble() %>%
   select(all_of(idx.min)) %>%
   cbind(detection) %>%
   ggscatter(x="OTU_269", y="OTU_313", add="reg.line", color="detection",
-            size=1.5, palette=c("Both are 0"=rgb(.6,0,0,.4), 
-                                "OTU_269 is 0"=rgb(0,.6,.3,.4), 
-                                "OTU_313 is 0"=rgb(0,.3,.6,.4), 
-                                "Both are >0"=rgb(0,0,0,.6)),
+            size=2, palette=palette_named,
             add.params=list(color="#800080", fill="lightgray"),
             conf.int=TRUE) +
   stat_cor(aes(label = after_stat(r.label)), color=rgb(.5,0,0), label.x.npc=0) +
@@ -60,10 +66,7 @@ p.min.clr <- otu.filt.CLR %>% as_tibble %>%
   dplyr::select(all_of(idx.min)) %>%
   cbind(detection) %>%
   ggscatter(x="OTU_269", y="OTU_313", add="reg.line", color="detection",
-            size=1.5, palette=c("Both are 0"=rgb(.6,0,0,.4), 
-                                "OTU_269 is 0"=rgb(0,.6,.3,.4), 
-                                "OTU_313 is 0"=rgb(0,.3,.6,.4), 
-                                "Both are >0"=rgb(0,0,0,.6)),
+            size=2, palette = palette_named,
             add.params=list(color="#800080", fill="lightgray"),
             conf.int=TRUE) +
   stat_cor(aes(label = after_stat(r.label)), color=rgb(.5,0,0), label.x.npc=0) +
@@ -83,14 +86,19 @@ detection <- otu.filt %>% as_tibble() %>%
   )) %>%
   select(detection)
 
+palette_named <- c(
+  "Both are 0" = "#D73027",
+  "OTU_269 is 0" = "#1A9850",
+  "OTU_97 is 0" = "#4575B4",
+  "Both are >0" = "black"
+)
+palette_named <- alpha(palette_named, .8)
+
 p.max <- otu.filt %>% as_tibble() %>%
   select(all_of(idx.max)) %>%
   cbind(detection) %>%
   ggscatter(x="OTU_269", y="OTU_97", add="reg.line", color="detection",
-            size=1.5, palette=c("Both are 0"=rgb(.6,0,0,.4), 
-                                "OTU_269 is 0"=rgb(0,.6,.3,.4), 
-                                "OTU_97 is 0"=rgb(0,.3,.6,.4), 
-                                "Both are >0"=rgb(0,0,0,.6)),
+            size=1.5, palette=palette_named,
             add.params=list(color="#800080", fill="lightgray"),
             conf.int=TRUE) +
   stat_cor(aes(label = after_stat(r.label)), color=rgb(.5,0,0), label.x.npc=0) +
@@ -103,10 +111,7 @@ p.max.clr <- otu.filt.CLR %>% as_tibble %>%
   dplyr::select(all_of(idx.max)) %>%
   cbind(detection) %>%
   ggscatter(x="OTU_269", y="OTU_97", add="reg.line", color="detection",
-            size=1.5, palette=c("Both are 0"=rgb(.6,0,0,.4), 
-                                "OTU_269 is 0"=rgb(0,.6,.3,.4), 
-                                "OTU_97 is 0"=rgb(0,.3,.6,.4), 
-                                "Both are >0"=rgb(0,0,0,.6)),
+            size=1.5, palette=palette_named,
             add.params=list(color="#800080", fill="lightgray"),
             conf.int=TRUE) +
   stat_cor(aes(label = after_stat(r.label)), color=rgb(.5,0,0), label.x.npc=0) +
@@ -118,8 +123,10 @@ p.max.clr <- otu.filt.CLR %>% as_tibble %>%
 
 
 pall <- ggarrange(
-  ggarrange(p.min, p.min.clr, common.legend=T, legend="top", ncol=2), 
-  ggarrange(p.max, p.max.clr, common.legend=T, legend="top", ncol=2),
+  ggarrange(p.min, p.min.clr, common.legend=T, legend="top", ncol=2, labels = c("B", "C"), 
+            label.x = .06, label.y = 1.07), 
+  ggarrange(p.max, p.max.clr, common.legend=T, legend="top", ncol=2, labels = c("D", "E"),
+            label.x = .06, label.y = 1.07),
   nrow=2)
 
 saveRDS(pall,"example_couple.rds")

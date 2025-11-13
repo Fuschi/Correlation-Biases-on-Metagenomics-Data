@@ -48,7 +48,8 @@ pL1 <- ggplot(df_sort, aes(x=d, y=pielou_round, fill=LOG_ERR_L1)) +
   scale_y_continuous(breaks=seq(.05,.95,.05), expand=c(0,0))  +
   scale_x_continuous(breaks=seq(10,200,10), expand=c(0,0)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  ylab(expression(bar(P))) + xlab("D") 
+  ylab(expression(bar(P))) + xlab("D") +
+  ggtitle("L1 Bias")
 #pL1
 #dev.off()
 
@@ -63,7 +64,8 @@ pCLR <- ggplot(df_sort, aes(x=d, y=pielou_round, fill=LOG_ERR_CLR)) +
   scale_y_continuous(breaks=seq(.05,.95,.05), expand=c(0,0))  +
   scale_x_continuous(breaks=seq(10,200,10), expand=c(0,0)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  ylab(expression(bar(P))) + xlab("D") 
+  ylab(expression(bar(P))) + xlab("D") +
+  ggtitle("CLR Bias")
 #pCLR
 #dev.off()
 
@@ -99,6 +101,29 @@ p_all <- ggarrange(p_L1_CLR,
                    ncol=2, widths=c(.35,.65),
                    labels=c("A","B"), label.x=c(.05,.9))
 
-png(filename="../Plots/Normalization_Bias_all.png", width=6000, height=4000, res=600)
+png(filename="../Plots/Normalization_Bias_all.png", width=6000, height=4500, res=600)
 p_all
+dev.off()
+
+
+
+df_percentiles <- df_sort %>%
+  group_by(d) %>%
+  summarise(
+    ERR_CLR_mean = mean(ERR_CLR),
+    ERR_CLR_p10 = quantile(ERR_CLR, 0.10),
+    ERR_CLR_p90 = quantile(ERR_CLR, 0.90)
+  )
+
+pCLR_Dim <- ggplot(df_percentiles, aes(x=d, y=ERR_CLR_mean)) +
+  geom_errorbar(aes(ymin = ERR_CLR_p10, ymax = ERR_CLR_p90), width = 2, color = "red") +
+  #geom_line(linewidth=1.2, color="black") +
+  geom_point(size=.5, color="black") +
+  theme_bw() +
+  scale_y_continuous(breaks=c(.01,.02,.05,.1,.15,.2)) +
+  ylab("MAE") + xlab("D") +
+  theme(plot.margin=unit(c(2,1,1,1),"cm"))
+
+png(filename="../Plots/CLR_Compositional_percentiles.png", width=1200, height=1200, res=300)
+pCLR_Dim
 dev.off()

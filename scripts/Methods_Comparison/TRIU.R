@@ -11,5 +11,5 @@ TRIU <- function(X){
   if(!is.numeric(X)) stop("X must be numeric")
   if(!isSymmetric(X)) stop("X must be symmetric")
   
-  return(X[upper.tri(X)])
+  return(X[upper.tri(X, diag = FALSE)])
 }
